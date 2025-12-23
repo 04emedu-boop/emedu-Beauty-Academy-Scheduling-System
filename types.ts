@@ -3,8 +3,15 @@ export enum Subject {
   THEORY = '學科',
   MAKEUP = '彩妝',
   STYLE = '造型',
+  SPA = 'SPA', // New
   SKIN = '護膚',
   INTERN = '實習'
+}
+
+export enum Location {
+  TAIPEI = '台北伊美',
+  TAICHUNG = '台中伊美',
+  KAOHSIUNG = '高雄伊美'
 }
 
 export enum SlotStatus {
@@ -23,9 +30,13 @@ export interface BookingRequest {
   date: string; // YYYY-MM-DD
   subject: Subject;
   time: string;
+  timeSlots?: string[];  // 新增:多時段陣列(可選)
   teacherName: string;
-  studentCount: number; // Added per "Technical Spec 3.2"
+  studentCount: number;
+  location: Location;  // 新增:地區
+  courseContent: string;  // 新增:課程內容
 }
+
 
 export interface ApiResponse {
   success: boolean;

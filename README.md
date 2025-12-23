@@ -1,4 +1,120 @@
-# 美業補習班教室登記系統 v2.0 - 專案交接手冊
+# 美業教室排課系統 v2.0
+
+**美業補習班教室登記系統** - 實現矩陣式課表的即時自動化登記系統
+
+## 📋 專案簡介
+
+本系統主要解決「老師預約」與「行政排課」之間的資訊落差,提供:
+- ✅ **自動化寫入**: 老師在網頁登記後,名字與學生人數直接顯示在 Google Sheet
+- ✅ **即時防撞機制**: 系統自動鎖定已預約時段,杜絕撞期
+- ✅ **直覺化介面**: 簡潔易用的預約流程
+
+## 🚀 快速開始
+
+### 環境需求
+- Node.js v18+ 
+- npm v9+
+
+### 安裝步驟
+
+```bash
+# 1. Clone 專案
+git clone https://github.com/emedu/emedu-Beauty-Academy-Scheduling-System.git
+cd emedu-Beauty-Academy-Scheduling-System
+
+# 2. 安裝相依套件
+npm install
+
+# 3. 啟動開發伺服器
+npm run dev
+
+# 4. 開啟瀏覽器訪問
+# http://localhost:3000
+```
+
+## 📦 可用指令
+
+```bash
+npm run dev      # 啟動開發伺服器
+npm run build    # 建置生產版本
+npm run preview  # 預覽生產版本
+```
+
+## 🛠️ 技術堆疊
+
+- **前端框架**: React 19
+- **開發語言**: TypeScript
+- **建置工具**: Vite 6
+- **樣式框架**: Tailwind CSS (CDN)
+- **圖示庫**: Lucide React
+- **後端**: Google Apps Script
+- **資料庫**: Google Sheets
+
+## 📁 專案結構
+
+```
+emedu-Beauty-Academy-Scheduling-System/
+├── components/          # React 元件
+│   ├── Header.tsx
+│   ├── SubjectSelector.tsx
+│   └── BookingGrid.tsx
+├── services/           # 服務層
+│   └── mockGasService.ts
+├── docs/              # 文件
+├── App.tsx            # 主應用程式
+├── types.ts           # TypeScript 型別定義
+├── constants.ts       # 常數定義
+├── index.tsx          # 應用程式入口
+├── index.html         # HTML 模板
+└── vite.config.ts     # Vite 配置
+```
+
+## 📖 詳細文件
+
+完整的系統文件請參閱 [README.md](./README.md) (原專案文件)
+
+## 🔧 開發指南
+
+### 程式碼風格
+- 使用 TypeScript 進行型別檢查
+- 遵循 React Hooks 最佳實踐
+- 元件採用函數式寫法
+
+### 常數管理
+所有魔術數字和配置值都定義在 `constants.ts`:
+- `TOAST_DURATION`: Toast 通知顯示時間
+- `MAX_STUDENT_COUNT`: 學生人數上限
+- `MIN_STUDENT_COUNT`: 學生人數下限
+
+## 🐛 已知問題
+
+目前使用 Mock 資料服務 (`mockGasService.ts`),實際部署時需要:
+1. 實作真實的 Google Apps Script 後端
+2. 更新 API 端點
+3. 處理實際的 Google Sheets 整合
+
+## 📝 更新日誌
+
+### v2.0 (2025-12-09)
+- ✅ 修復日期格式問題
+- ✅ 加強學生人數驗證
+- ✅ 移除未使用的環境變數配置
+- ✅ 將魔術數字移至常數檔案
+- ✅ 改善錯誤處理
+
+## 👥 貢獻
+
+歡迎提交 Issue 和 Pull Request!
+
+## 📄 授權
+
+Private - 僅供內部使用
+
+---
+
+**最後更新**: 2025-12-09  
+**維護者**: 開發團隊
+
 
 **文件狀態**：正式版 (v2.0)  
 **適用對象**：補習班行政主管、教務人員、系統維護工程師  
