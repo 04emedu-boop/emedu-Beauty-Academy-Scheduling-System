@@ -14,8 +14,9 @@ let html = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
 const jsFiles = fs.readdirSync(assetsDir).filter(f => f.endsWith('.js'));
 jsFiles.forEach(file => {
     const content = fs.readFileSync(path.join(assetsDir, file), 'utf-8');
+    // Remove type="module" and crossorigin for better GAS compatibility
     const scriptTag = /<script.*src=".*assets\/index-.*.js".*><\/script>/;
-    html = html.replace(scriptTag, `<script type="module">${content}</script>`);
+    html = html.replace(scriptTag, `<script>${content}</script>`);
 });
 
 // 3. Fix other assets (like favicon if any, though GAS handles it poorly)

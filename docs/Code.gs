@@ -19,25 +19,28 @@ const DEFAULT_LOCATION = '台中伊美';
 // --- HTTP 處理 ---
 
 function doGet(e) {
-  // 1. 如果有 action 參數，則處理 API 請求 (用於相容現有架構)
-  if (e && e.parameter && e.parameter.action) {
-    const action = e.parameter.action;
-    const location = e.parameter.location || DEFAULT_LOCATION;
+  const action = (e && e.parameter) ? e.parameter.action : null;
+  const location = (e && e.parameter) ? (e.parameter.location || DEFAULT_LOCATION) : DEFAULT_LOCATION;
 
+  // 1. 只有當 action 是已知的 API 指令時才處理 API 請求
+  const recognizedActions = ['getTeachers', 'getContents', 'getSchedule'];
+  
+  if (action && recognizedActions.includes(action)) {
     if (action === 'getTeachers') return getTeacherList(location);
     if (action === 'getContents') return getContentList(location);
     if (action === 'getSchedule') return getDaySchedule(e.parameter.date, e.parameter.subject, location);
-    
-    return successResponse({ status: 'error', message: 'Unknown action' });
   }
 
-  // 2. 否則，回傳前端 UI 介面
-  // 需在 GAS 專案中建立一個名為 Frontend.html 的檔案，並將 docs/Frontend.html 的內容貼入
-  return HtmlService.createTemplateFromFile('Frontend')
-      .evaluate()
-      .setTitle('美業教室排課系統 v2.0')
-      .addMetaTag('viewport', 'width=device-width, initial-scale=1')
-      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  // 2. 否則，一律回傳前端 UI 介面
+  try {
+    return HtmlService.createTemplateFromFile('Frontend')
+        .evaluate()
+        .setTitle('美業教室排課系統 v2.0')
+        .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  } catch (error) {
+    return ContentService.createTextOutput("系統錯誤：在 GAS 專案中找不到名為 『Frontend』 的 HTML 檔案。\n\n請依照手冊說明，在 GAS 中點擊 「+」 -> 「HTML」，建立一個名為 Frontend 的檔案，並貼入 docs/Frontend.html 的內容。");
+  }
 }
 
 function doPost(e) {
