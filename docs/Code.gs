@@ -19,16 +19,25 @@ const DEFAULT_LOCATION = '台中伊美';
 // --- HTTP 處理 ---
 
 function doGet(e) {
-  if (!e || !e.parameter) return ContentService.createTextOutput("請使用 Web App 網址");
-  
-  const action = e.parameter.action;
-  const location = e.parameter.location || DEFAULT_LOCATION; // 取得地區參數
+  // 1. 如果有 action 參數，則處理 API 請求 (用於相容現有架構)
+  if (e && e.parameter && e.parameter.action) {
+    const action = e.parameter.action;
+    const location = e.parameter.location || DEFAULT_LOCATION;
 
-  if (action === 'getTeachers') return getTeacherList(location);
-  if (action === 'getContents') return getContentList(location);
-  if (action === 'getSchedule') return getDaySchedule(e.parameter.date, e.parameter.subject, location);
-  
-  return successResponse({ status: 'error', message: 'Unknown action' });
+    if (action === 'getTeachers') return getTeacherList(location);
+    if (action === 'getContents') return getContentList(location);
+    if (action === 'getSchedule') return getDaySchedule(e.parameter.date, e.parameter.subject, location);
+    
+    return successResponse({ status: 'error', message: 'Unknown action' });
+  }
+
+  // 2. 否則，回傳前端 UI 介面
+  // 需在 GAS 專案中建立一個名為 Frontend.html 的檔案，並將 docs/Frontend.html 的內容貼入
+  return HtmlService.createTemplateFromFile('Frontend')
+      .evaluate()
+      .setTitle('美業教室排課系統 v2.0')
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 function doPost(e) {
