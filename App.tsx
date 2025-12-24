@@ -9,6 +9,7 @@ import { Subject, TimeSlotData, Location } from './types';
 import { MOCK_INITIAL_DATE, TOAST_DURATION, MAX_STUDENT_COUNT, MIN_STUDENT_COUNT, MAX_COURSE_CONTENT_LENGTH } from './constants';
 import * as MockGasService from './services/mockGasService';
 import * as RealGasService from './services/gasService';
+import { validateGasUrl } from './services/gasService';
 import { User, Calendar, Users, BookOpen, AlertCircle, Plus } from 'lucide-react';
 import { getAvailableTimeSlots, isClosedDay, isBookingAllowed, getDayOfWeekText, getBusinessHoursText, getClosedDayMessage } from './utils/timeUtils';
 
@@ -65,8 +66,8 @@ const App: React.FC = () => {
     try {
       const data = await GasService.fetchDaySchedule(selectedDate, selectedSubject, location);
       setSlots(data);
-    } catch (error) {
-      showToast('讀取課表失敗,請重試', 'error');
+    } catch (error: any) {
+      showToast(error.message || '讀取課表失敗,請重試', 'error');
     } finally {
       setLoading(false);
     }
@@ -244,6 +245,29 @@ const App: React.FC = () => {
         }}
       />
 
+      {/* URL Validation Warning */}
+      {gasUrl && !validateGasUrl(gasUrl).isValid && (
+        <div className="max-w-md mx-auto px-4 mt-2">
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex gap-2 items-start">
+            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-amber-800">
+              <p className="font-bold">網址格式不正確</p>
+              <p className="text-xs mt-1">{validateGasUrl(gasUrl).error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mock Mode Indicator */}
+      {!gasUrl && (
+        <div className="max-w-md mx-auto px-4 mt-2">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex gap-2 items-center">
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+            <p className="text-sm text-blue-800 font-medium">目前使用模擬模式 (資料不會儲存)</p>
+          </div>
+        </div>
+      )}
+
       <main className="max-w-md mx-auto px-4 py-6 space-y-6">
 
         {/* Section 1: Teacher Info & Basic Settings */}
@@ -265,8 +289,8 @@ const App: React.FC = () => {
                   setShowValidationError(false);
                 }}
                 className={`flex-1 p-2.5 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white transition-colors ${showValidationError && !teacherName
-                    ? 'border-red-500 bg-red-50'
-                    : 'border-gray-300'
+                  ? 'border-red-500 bg-red-50'
+                  : 'border-gray-300'
                   }`}
               >
                 <option value="" disabled>請點選您的名字</option>
